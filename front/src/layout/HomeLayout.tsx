@@ -11,7 +11,7 @@ const HomeLayout: React.FC<HomeLayoutProps> = ({ children }) => {
       <AsideBar />
       <div className="flex-1 bg-white/5">
         <NavBar />
-        <section className="p-4">{children}</section>
+        <section className="py-4 px-8">{children}</section>
       </div>
     </section>
   )

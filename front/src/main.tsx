@@ -9,6 +9,10 @@ import ProfileId from './pages/Home/ProfileId'
 import Profile from './pages/Home/Profile'
 import Videos from './pages/Home/Videos'
 import VideoId from './pages/Home/VideoId'
+import Feed from './pages/Home/Feed'
+import Projects from './pages/Home/Projects'
+import Messages from './pages/Home/Messages'
+import MessageId from './pages/Home/MessageId'
 const router = createBrowserRouter([
   {
     path: '/',
@@ -33,6 +37,22 @@ const router = createBrowserRouter([
   {
     path: 'video/:id',
     element: <VideoId />,
+  },
+  {
+    path: 'feed',
+    element: <Feed />,
+  },
+  {
+    path: 'projects',
+    element: <Projects />,
+  },
+  {
+    path: 'messages',
+    element: <Messages />,
+  },
+  {
+    path: 'messages/:id',
+    element: <MessageId />,
   },
 ])
 ReactDOM.createRoot(document.getElementById('root')!).render(

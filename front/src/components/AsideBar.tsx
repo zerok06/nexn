@@ -1,4 +1,5 @@
 import { Comment01Icon } from './icons/Comment01Icon'
+import { HomeIcon } from './icons/HomeIcon'
 import { Home01Icon } from './icons/Home01Icon'
 import { UserIcon } from './icons/UserIcon'
 import { YoutubeIcon } from './icons/YoutubeIcon'
@@ -7,7 +8,7 @@ const item = [
   {
     id: '905b8c8b-65a8-4496-9af8-e8cb96c02bf9',
     name: 'Profile',
-    href: '#',
+    href: '/profile',
     label: 'profile',
     icon: <UserIcon />,
   },
@@ -21,8 +22,22 @@ const item = [
   {
     id: '4899e3cf-ef03-461b-9aff-945c2d658e88',
     name: 'Feed',
-    href: '#',
+    href: '/feed',
     label: 'Feed',
+    icon: <Comment01Icon />,
+  },
+  {
+    id: '4899e3cf-ef03-461b-9aff-945c2d658e88',
+    name: 'Feed',
+    href: '/projects',
+    label: 'Feed',
+    icon: <Comment01Icon />,
+  },
+  {
+    id: '4899e3cf-ef03-461b-9aff-945c2d658e88',
+    name: 'Messages',
+    href: '/messages',
+    label: 'Messages',
     icon: <Comment01Icon />,
   },
 ]
@@ -56,16 +71,16 @@ const ItemAside: React.FC<ItemAsideProps> = ({
 const AsideBar = () => {
   return (
     <div className="flex flex-col justify-between items-center pt-8 w-[150px] gap-4 pb-6 h-svh sticky top-0">
-      <div>LOgo</div>
+      <div>NEXN</div>
       <div className="flex flex-col justify-between flex-1">
         <div className="flex flex-col gap-6">
           <div className="flex">
             <a
-              href="#"
+              href="/home"
               title="Home"
               className="h-14 w-14 rounded-full bg-primary flex justify-center items-center"
             >
-              <Home01Icon />
+              <HomeIcon />
             </a>
           </div>
           <div className="flex p-3 bg-white/5 rounded-full flex-col gap-1">
