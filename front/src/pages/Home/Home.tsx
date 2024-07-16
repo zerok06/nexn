@@ -1,5 +1,7 @@
+import HomeLayout from '@/layout/HomeLayout'
+
 const Home = () => {
-  return <div>Home</div>
+  return <HomeLayout>asd</HomeLayout>
 }
 
 export default Home
