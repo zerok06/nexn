@@ -1,4 +1,5 @@
 import { sign, verify } from 'jsonwebtoken'
+import type { JwtPayload } from 'jsonwebtoken'
 
 const SECRET_KEY = process.env.JWT_SECRET_KEY
 
@@ -10,7 +11,7 @@ export const encodeToken = (params: Object): string => {
   return token
 }
 
-export const decoreToken = (token: string): Object => {
+export const decoreToken = (token: string) => {
   if (!SECRET_KEY || typeof SECRET_KEY == 'undefined') {
     new Error('Llave secreta no configurada "JWT_SECRET_KEY"')
   }

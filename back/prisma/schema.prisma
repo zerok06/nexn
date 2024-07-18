@@ -24,7 +24,7 @@ model usuario {
   id              String        @id @default(auto()) @map("_id") @db.ObjectId
   nombres         String
   apellidos       String
-  role            Role
+  role            Role          @default(user)
   credenciales    creadenciales @relation(fields: [creadencialesId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   creadencialesId String        @unique @db.ObjectId
 }

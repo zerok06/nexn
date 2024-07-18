@@ -1,7 +1,18 @@
 import Button from '@/components/Button'
 import HomeLayout from '@/layout/HomeLayout'
+import { sendRequest } from '@/lib/sendRequest'
+import { useEffect } from 'react'
 
 const Profile = () => {
+  useEffect(() => {
+    ;(async () => {
+      const fetching = await sendRequest(`http://localhost:3000/api/profile`)
+      const res = await fetching.json()
+
+      console.log(res)
+    })()
+  }, [])
+
   return (
     <HomeLayout>
       <div className="banner rounded-2xl h-[200px]" />
@@ -38,7 +49,7 @@ const Profile = () => {
                 Me gustas
               </div>
             </div>
-            <p></p>
+            <p>{}</p>
           </div>
         </div>
       </div>

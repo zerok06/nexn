@@ -2,7 +2,7 @@ import { PrismaClient } from '@prisma/client'
 import express from 'express'
 import type { Request, Response } from 'express'
 import { comparePassword } from '../lib/hash'
-import { encodeToken } from '../lib/jwt'
+import { decoreToken, encodeToken } from '../lib/jwt'
 
 const app = express()
 
@@ -34,10 +34,19 @@ const signIn = async (req: Request, res: Response) => {
     }
 
     const token = encodeToken({ id: existUser?.id, role: existUser?.role })
-    res.cookie('auth-token', token)
-    res.json({
-      success: true,
-    })
+    res
+      .cookie('auth-nexn', token, {
+        httpOnly: false,
+        secure: true,
+        maxAge: 900000,
+        path: '/',
+        partitioned: true,
+      })
+      .json({
+        success: true,
+        token,
+        user: existUser,
+      })
   } catch (error) {
     res.json({ success: false, error })
   }
@@ -45,14 +54,22 @@ const signIn = async (req: Request, res: Response) => {
 
 const verifyAuth = async (req: Request, res: Response) => {
   try {
-    const cookies = req.cookies
-    res.json({ success: true, cookies })
+    const token = req.cookies['auth-nexn']
+
+    const payload = decoreToken(token)
+    const user = await prisma.usuario.findUnique({
+      where: {
+        /* @ts-ignore */
+        id: payload.id,
+      },
+    })
+    res.json({ success: true, user })
   } catch (error) {
-    res.json({ success: false })
+    res.json({ success: false, error })
   }
 }
 
-app.post('/signIn', signIn)
+app.post('/signin', signIn)
 app.post('/verify', verifyAuth)
 
 export default app

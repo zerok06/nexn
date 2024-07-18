@@ -13,10 +13,15 @@ import Feed from './pages/Home/Feed'
 import Projects from './pages/Home/Projects'
 import Messages from './pages/Home/Messages'
 import MessageId from './pages/Home/MessageId'
+import AuthProvider from './context/AuthProvider'
+import SignIn from './pages/SignIn'
+import SignUp from './pages/SignUp'
+import NoFoundPage from './pages/NoFoundPage'
 const router = createBrowserRouter([
   {
     path: '/',
     element: <Init />,
+    errorElement: <NoFoundPage />,
   },
   {
     path: 'home',
@@ -54,11 +59,22 @@ const router = createBrowserRouter([
     path: 'messages/:id',
     element: <MessageId />,
   },
+
+  {
+    path: 'signin',
+    element: <SignIn />,
+  },
+  {
+    path: 'signup',
+    element: <SignUp />,
+  },
 ])
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <RootLayout>
-      <RouterProvider router={router} />
+      <AuthProvider>
+        <RouterProvider router={router} />
+      </AuthProvider>
     </RootLayout>
   </React.StrictMode>
 )

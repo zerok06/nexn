@@ -14,6 +14,8 @@ interface RegisterUserProps {
 
 const registerUser = async (req: Request, res: Response) => {
   try {
+    console.log(req.body)
+
     const { password, username, apellidos, nombres }: RegisterUserProps =
       req.body
 
@@ -28,14 +30,13 @@ const registerUser = async (req: Request, res: Response) => {
       data: {
         apellidos,
         nombres,
-        role: 'user',
         creadencialesId: newCredentials.id,
       },
     })
 
     res.json({ success: true })
   } catch (error) {
-    res.json({ success: false })
+    res.json({ success: false, error })
   }
 }
 
