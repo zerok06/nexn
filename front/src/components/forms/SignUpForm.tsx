@@ -1,7 +1,6 @@
 import { sendRequest } from '@/lib/sendRequest'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useNavigate } from 'react-router-dom'
-import React from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
@@ -32,7 +31,7 @@ const SignUpForm = () => {
     console.log(data)
 
     const fetching = await sendRequest(
-      'http://localhost:3000/api/users/register',
+      'http://localhost:3001/api/users/register',
       'post',
       data
     )

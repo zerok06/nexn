@@ -50,13 +50,7 @@ interface ItemAsideProps {
   icon: React.ReactNode
 }
 
-const ItemAside: React.FC<ItemAsideProps> = ({
-  href,
-  icon,
-  id,
-  label,
-  name,
-}) => {
+const ItemAside: React.FC<ItemAsideProps> = ({ href, icon, name }) => {
   return (
     <a
       href={href}

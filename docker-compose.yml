@@ -1,23 +1,50 @@
-version: '1'
+version: '2'
 services:
   front:
     build: ./front
     ports:
-      - "5173:3000"
-    links: 
-      - back
+      - "3000:3000"
   back:
     build: ./back
+    ports:
+      - "3001:3000"
+    environment:
+      - DATABASE_URL=mongodb://nexn:password@mongo:27017/nexn?authSource=admin
+      - JWT_SECRET_KEY=josepaye123
+    links:
+      - mongo
+
   mongo:
-    image: mongo
+    image: mongo:6
+    container_name: mongo 
+    restart: always
     ports:
       - "27017:27017"
     environment:
-      - MONGO_INITDB_ROOT_USERNAME=nico
-      - MONGO_INITDB_ROOT_PASSWORD=password
+      MONGO_INITDB_ROOT_USERNAME: nexn
+      MONGO_INITDB_ROOT_PASSWORD: password
+    entrypoint:
+      - bash
+      - -c
+      - |
+          cp /keyfile /mongo_keyfile
+          chmod 400 /mongo_keyfile
+          chown 999:999 /mongo_keyfile
+          exec docker-entrypoint.sh $$@
+    command: "mongod --bind_ip_all --replSet rs0 --keyFile /mongo_keyfile"
     volumes:
-      - mongo-data:/data/db
+      - ./keyfile:/keyfile
 
-      
+  mongo-setup:
+    image: mongo:6
+    container_name: mongo_setup
+    depends_on:
+      - mongo
+    restart: on-failure
+    entrypoint: ["/bin/bash", "/setup_mongo.sh"]
+    volumes:
+      - ./setup_mongo.sh:/setup_mongo.sh
+
+
 volumes:
   mongo-data:

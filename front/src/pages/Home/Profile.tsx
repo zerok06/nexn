@@ -6,7 +6,7 @@ import { useEffect } from 'react'
 const Profile = () => {
   useEffect(() => {
     ;(async () => {
-      const fetching = await sendRequest(`http://localhost:3000/api/profile`)
+      const fetching = await sendRequest(`http://localhost:3001/api/profile`)
       const res = await fetching.json()
 
       console.log(res)

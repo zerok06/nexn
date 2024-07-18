@@ -13,7 +13,7 @@ const Messages = () => {
           </div>
           <Separator className="my-2 bg-white/10" />
 
-          {[1, 2, 3, 4].map(item => (
+          {[1, 2, 3, 4].map(() => (
             <ChatButton />
           ))}
         </div>

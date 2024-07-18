@@ -1,5 +1,3 @@
-import React from 'react'
-
 const NoFoundPage = () => {
   return (
     <div className="grid h-screen place-content-center bg-black px-4">

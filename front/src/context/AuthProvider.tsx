@@ -3,6 +3,7 @@ import { createContext, useContext, useEffect, useMemo, useState } from 'react'
 
 const AuthContext = createContext({
   isAuth: true,
+  /* @ts-ignore */
   setToken: (user: UserProps) => {},
   user: {
     nombres: '',
@@ -36,7 +37,7 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const verifyAuth = async () => {
     const fetching = await sendRequest(
-      'http://localhost:3000/api/verify',
+      'http://localhost:3001/api/verify',
       'post'
     )
     const res = await fetching.json()
