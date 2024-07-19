@@ -1,15 +1,15 @@
 import { useAuth } from '@/context/AuthProvider'
 import HomeLayout from '@/layout/HomeLayout'
-import { Navigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 const Home = () => {
   const { isAuth } = useAuth()
+  const navigate = useNavigate()
+  if (!isAuth) {
+    navigate('/signin')
+  }
 
-  return (
-    <HomeLayout>
-      asd {!isAuth && <Navigate to={'/signin'} />} {isAuth + ''}
-    </HomeLayout>
-  )
+  return <HomeLayout>asd</HomeLayout>
 }
 
 export default Home

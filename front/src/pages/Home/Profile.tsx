@@ -1,17 +1,15 @@
 import Button from '@/components/Button'
+import { useAuth } from '@/context/AuthProvider'
 import HomeLayout from '@/layout/HomeLayout'
-import { sendRequest } from '@/lib/sendRequest'
-import { useEffect } from 'react'
+import { useLoaderData, useNavigate } from 'react-router-dom'
 
 const Profile = () => {
-  useEffect(() => {
-    ;(async () => {
-      const fetching = await sendRequest(`http://localhost:3001/api/profile`)
-      const res = await fetching.json()
-
-      console.log(res)
-    })()
-  }, [])
+  const data = useLoaderData()
+  const { isAuth } = useAuth()
+  const navigate = useNavigate()
+  if (!isAuth) {
+    navigate('/signin')
+  }
 
   return (
     <HomeLayout>
@@ -26,7 +24,10 @@ const Profile = () => {
             />
             <div>
               <div>
-                <h3 className="font-medium text-lg">John Doe</h3>
+                <h3 className="font-medium text-lg">
+                  {/* @ts-ignore */}
+                  {data?.profile?.nombres}
+                </h3>
                 <p className="text-white/70 text-sm">@zerok06</p>
               </div>
               <div>

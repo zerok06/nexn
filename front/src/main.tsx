@@ -17,6 +17,8 @@ import AuthProvider from './context/AuthProvider'
 import SignIn from './pages/SignIn'
 import SignUp from './pages/SignUp'
 import NoFoundPage from './pages/NoFoundPage'
+import LoaderProfile from './components/profile/LoaderProfile'
+import LoaderProfileUser from './components/profile/LoaderProfileUser'
 const router = createBrowserRouter([
   {
     path: '/',
@@ -30,10 +32,12 @@ const router = createBrowserRouter([
   {
     path: 'profile',
     element: <Profile />,
+    loader: LoaderProfileUser,
   },
   {
     path: 'profile/:id',
     element: <ProfileId />,
+    loader: LoaderProfile,
   },
   {
     path: 'videos',

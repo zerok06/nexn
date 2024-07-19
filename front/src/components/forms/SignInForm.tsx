@@ -29,11 +29,7 @@ const SignInForm = () => {
   const { setToken } = useAuth()
   const navigate = useNavigate()
   const onSubmit = async (data: any) => {
-    const fetching = await sendRequest(
-      'http://localhost:3001/api/signin',
-      'post',
-      data
-    )
+    const fetching = await sendRequest('/api/signin', 'post', data)
     const res = await fetching.json()
     if (res.success) {
       setToken({

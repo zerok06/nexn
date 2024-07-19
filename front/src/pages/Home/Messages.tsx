@@ -1,9 +1,16 @@
 import ChatButton from '@/components/Messages/ChatButton'
 import { Separator } from '@/components/ui/separator'
+import { useAuth } from '@/context/AuthProvider'
 import HomeLayout from '@/layout/HomeLayout'
 import { Send } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
 
 const Messages = () => {
+  const { isAuth } = useAuth()
+  const navigate = useNavigate()
+  if (!isAuth) {
+    navigate('/signin')
+  }
   return (
     <HomeLayout>
       <div className="flex min-h-[calc(100svh-80px-32px)]">

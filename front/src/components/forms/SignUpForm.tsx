@@ -30,11 +30,7 @@ const SignUpForm = () => {
   const onSubmit = async (data: any) => {
     console.log(data)
 
-    const fetching = await sendRequest(
-      'http://localhost:3001/api/users/register',
-      'post',
-      data
-    )
+    const fetching = await sendRequest('/api/users/register', 'post', data)
     const res = await fetching.json()
     if (res.success == true) {
       navigate('/signin')

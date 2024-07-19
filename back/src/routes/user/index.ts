@@ -9,10 +9,14 @@ const findOneUser = async (req: Request, res: Response) => {
   try {
     const id = req.params.id
 
-    const user = await prisma.usuario.findUnique({
-      where: { id },
+    const profile = await prisma.profile.findFirst({
+      where: {
+        usuario: {
+          id,
+        },
+      },
     })
-    res.json({ success: true, user })
+    res.json({ success: true, profile })
   } catch (error) {
     res.json({ success: false })
   }
@@ -25,10 +29,14 @@ const findUser = async (req: Request, res: Response) => {
     /* @ts-ignore */
     const { id } = decoreToken(token)
 
-    const user = await prisma.usuario.findUnique({
-      where: { id },
+    const profile = await prisma.profile.findFirst({
+      where: {
+        usuario: {
+          id,
+        },
+      },
     })
-    res.json({ success: true, user })
+    res.json({ success: true, profile })
   } catch (error) {
     res.json({ success: false, error })
   }

@@ -2,6 +2,8 @@ import { PrismaClient } from '@prisma/client'
 import e from 'express'
 import type { Request, Response } from 'express'
 
+const DEFAULT_AVATAR = ''
+
 const prisma = new PrismaClient()
 const app = e()
 
@@ -26,7 +28,7 @@ const registerUser = async (req: Request, res: Response) => {
       },
     })
 
-    await prisma.usuario.create({
+    const newUser = await prisma.usuario.create({
       data: {
         apellidos,
         nombres,
@@ -34,6 +36,14 @@ const registerUser = async (req: Request, res: Response) => {
       },
     })
 
+    await prisma.profile.create({
+      data: {
+        username,
+        nombres,
+        usuarioId: newUser.id,
+        avatar: DEFAULT_AVATAR,
+      },
+    })
     res.json({ success: true })
   } catch (error) {
     res.json({ success: false, error })

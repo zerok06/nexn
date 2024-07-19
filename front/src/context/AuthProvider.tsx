@@ -36,10 +36,7 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   }
 
   const verifyAuth = async () => {
-    const fetching = await sendRequest(
-      'http://localhost:3001/api/verify',
-      'post'
-    )
+    const fetching = await sendRequest('/api/verify', 'post')
     const res = await fetching.json()
     if (res.success) {
       setUser({

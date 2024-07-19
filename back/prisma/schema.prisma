@@ -27,6 +27,20 @@ model usuario {
   role            Role          @default(user)
   credenciales    creadenciales @relation(fields: [creadencialesId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   creadencialesId String        @unique @db.ObjectId
+  profile         profile?
+}
+
+model profile {
+  id        String  @id @default(auto()) @map("_id") @db.ObjectId
+  avatar    String
+  username  String
+  nombres   String
+  followers Int     @default(0)
+  likes     Int     @default(0)
+  following Int     @default(0)
+  desc      String  @default("Welcome to my profile!")
+  usuario   usuario @relation(fields: [usuarioId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  usuarioId String  @unique @db.ObjectId
 }
 
 enum Role {
