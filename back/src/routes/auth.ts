@@ -33,7 +33,19 @@ const signIn = async (req: Request, res: Response) => {
       new Error('Credenciales incorrectas')
     }
 
-    const token = encodeToken({ id: existUser?.id, role: existUser?.role })
+    const profile = await prisma.profile.findFirst({
+      where: {
+        usuario: {
+          id: existUser?.id,
+        },
+      },
+    })
+
+    const token = encodeToken({
+      id: existUser?.id,
+      role: existUser?.role,
+      idProfile: profile?.id,
+    })
     res
       .cookie('auth-nexn', token, {
         httpOnly: false,
@@ -57,10 +69,19 @@ const verifyAuth = async (req: Request, res: Response) => {
     const token = req.cookies['auth-nexn']
 
     const payload = decoreToken(token)
-    const user = await prisma.usuario.findUnique({
+    const user = await prisma.profile.findFirst({
       where: {
-        /* @ts-ignore */
-        id: payload.id,
+        usuario: {
+          /* @ts-ignore */
+          id: payload.id,
+        },
+      },
+      include: {
+        usuario: {
+          include: {
+            credenciales: true,
+          },
+        },
       },
     })
     res.json({ success: true, user })

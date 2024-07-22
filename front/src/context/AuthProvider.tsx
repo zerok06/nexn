@@ -8,6 +8,7 @@ const AuthContext = createContext({
   user: {
     nombres: '',
     apellidos: '',
+    username: '',
     id: '',
   },
 })
@@ -19,6 +20,7 @@ interface AuthProviderProps {
 interface UserProps {
   nombres: string
   apellidos: string
+  username: string
   id: string
 }
 
@@ -27,6 +29,7 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<UserProps>({
     nombres: '',
     apellidos: '',
+    username: '',
     id: '',
   })
 
@@ -40,9 +43,10 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const res = await fetching.json()
     if (res.success) {
       setUser({
-        apellidos: res.user.apellidos,
+        apellidos: res.user.usuario.apellidos,
         id: res.user.id,
         nombres: res.user.nombres,
+        username: res.user.username,
       })
       setIsAuth(true)
       console.log(res.user)

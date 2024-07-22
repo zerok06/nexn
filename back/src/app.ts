@@ -2,6 +2,8 @@ import express from 'express'
 import auth from './routes/auth'
 import users from './routes/users/'
 import user from './routes/user'
+import follow from './routes/follow'
+import chat from './routes/chat'
 import morgan from 'morgan'
 import cors from 'cors'
 import cookieParser from 'cookie-parser'
@@ -28,6 +30,8 @@ app.use(cookieParser())
 app.use('/api/', auth)
 app.use('/api/users/', users)
 app.use('/api/', user)
+app.use('/api/', follow)
+app.use('/api/', chat)
 
 app.listen(app.get('port'), () => {
   console.log('server in port 3000')

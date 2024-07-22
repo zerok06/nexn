@@ -19,6 +19,9 @@ import SignUp from './pages/SignUp'
 import NoFoundPage from './pages/NoFoundPage'
 import LoaderProfile from './components/profile/LoaderProfile'
 import LoaderProfileUser from './components/profile/LoaderProfileUser'
+import SearchProfile from './pages/Home/SearchProfile'
+import LoaderProfiles from './components/profile/LoaderProfiles'
+import MessagesProvider from './context/MessagesProvider'
 const router = createBrowserRouter([
   {
     path: '/',
@@ -38,6 +41,11 @@ const router = createBrowserRouter([
     path: 'profile/:id',
     element: <ProfileId />,
     loader: LoaderProfile,
+  },
+  {
+    path: 'profile/search/',
+    element: <SearchProfile />,
+    /* loader: LoaderProfiles, */
   },
   {
     path: 'videos',
@@ -77,7 +85,9 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <RootLayout>
       <AuthProvider>
-        <RouterProvider router={router} />
+        <MessagesProvider>
+          <RouterProvider router={router} />
+        </MessagesProvider>
       </AuthProvider>
     </RootLayout>
   </React.StrictMode>

@@ -1,18 +1,18 @@
 import { Comment01Icon } from './icons/Comment01Icon'
 import { HomeIcon } from './icons/HomeIcon'
 import { Home01Icon } from './icons/Home01Icon'
-import { UserIcon } from './icons/UserIcon'
 import { YoutubeIcon } from './icons/YoutubeIcon'
+import { MessageCircle, Search } from 'lucide-react'
 
 const item = [
   {
     id: '905b8c8b-65a8-4496-9af8-e8cb96c02bf9',
-    name: 'Profile',
-    href: '/profile',
-    label: 'profile',
-    icon: <UserIcon />,
+    name: 'Search',
+    href: '/profile/search',
+    label: 'search',
+    icon: <Search />,
   },
-  {
+  /* {
     id: '34011586-02a8-4586-93d9-9c4ec740f686',
     name: 'Video',
     href: '/videos',
@@ -32,13 +32,13 @@ const item = [
     href: '/projects',
     label: 'Feed',
     icon: <Comment01Icon />,
-  },
+  }, */
   {
     id: '4899e3cf-ef03-461b-9aff-945c2d658e88',
     name: 'Messages',
     href: '/messages',
     label: 'Messages',
-    icon: <Comment01Icon />,
+    icon: <MessageCircle />,
   },
 ]
 

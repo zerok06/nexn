@@ -36,6 +36,7 @@ const SignInForm = () => {
         apellidos: res.user.apellidos,
         id: res.user.id,
         nombres: res.user.nombres,
+        username: res.user.credenciales.username,
       })
       navigate('/home')
     }

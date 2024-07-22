@@ -30,17 +30,52 @@ model usuario {
   profile         profile?
 }
 
+model Video {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+}
+
 model profile {
-  id        String  @id @default(auto()) @map("_id") @db.ObjectId
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
   avatar    String
   username  String
   nombres   String
-  followers Int     @default(0)
-  likes     Int     @default(0)
-  following Int     @default(0)
-  desc      String  @default("Welcome to my profile!")
-  usuario   usuario @relation(fields: [usuarioId], references: [id], onUpdate: Cascade, onDelete: Cascade)
-  usuarioId String  @unique @db.ObjectId
+  likes     Int       @default(0)
+  desc      String    @default("Welcome to my profile!")
+  usuario   usuario   @relation(fields: [usuarioId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  usuarioId String    @unique @db.ObjectId
+  follows   follow[]  @relation("Following")
+  followers follow[]  @relation("Follower")
+  Message   Message[]
+  senders   chat[]    @relation("sender")
+  recpetors chat[]    @relation("receptor")
+}
+
+model follow {
+  id          String  @id @default(auto()) @map("_id") @db.ObjectId
+  follower    profile @relation("Follower", fields: [followerId], references: [id])
+  followerId  String  @db.ObjectId
+  following   profile @relation("Following", fields: [followingId], references: [id])
+  followingId String  @db.ObjectId
+}
+
+model chat {
+  id                String    @id @default(auto()) @map("_id") @db.ObjectId
+  sender            profile   @relation(name: "sender", fields: [profileSenderId], references: [id])
+  profileSenderId   String    @db.ObjectId
+  receptor          profile   @relation(name: "receptor", fields: [profileReceptorId], references: [id])
+  profileReceptorId String    @db.ObjectId
+  Message           Message[]
+}
+
+model Message {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  message   String
+  nombre    String
+  chat      chat     @relation(fields: [chatId], references: [id])
+  chatId    String   @db.ObjectId
+  profile   profile  @relation(fields: [profileId], references: [id])
+  createAt  DateTime @default(now())
+  profileId String   @db.ObjectId
 }
 
 enum Role {
