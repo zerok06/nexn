@@ -139,7 +139,11 @@ const MessagesProvider: React.FC<MessagesProviderProps> = ({ children }) => {
 
   useEffect(() => {
     loadChats()
-    const newSocket = io(import.meta.env.VITE_HOST_MESSAGES)
+    const newSocket = io(
+      import.meta.env.PROD
+        ? import.meta.env.VITE_HOST_MESSAGES_PROD
+        : import.meta.env.VITE_HOST_MESSAGES
+    )
     setSocket(newSocket)
     return () => {
       newSocket.disconnect()

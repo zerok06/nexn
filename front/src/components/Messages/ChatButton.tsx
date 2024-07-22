@@ -9,12 +9,7 @@ interface ChatButton {
 }
 
 const ChatButton: React.FC<ChatButton> = ({
-  chat: {
-    receptor: { nombres },
-    nombre,
-    messages,
-    id,
-  },
+  chat: { nombre, messages, id },
   handle,
 }) => {
   return (
@@ -31,12 +26,18 @@ const ChatButton: React.FC<ChatButton> = ({
           <h4 className="font-medium">{nombre}</h4>
           <p className="text-xs text-white/70">
             <TimeFormat
-              date={new Date(messages[messages.length - 1].createAt)}
+              date={
+                messages.length > 0
+                  ? new Date(messages[messages.length - 1]?.createAt)
+                  : new Date()
+              }
             />
           </p>
         </div>
         <p className="text-sm text-white/70 text-start">
-          {messages[messages.length - 1].message.slice(0, 20)}
+          {messages.length > 0
+            ? messages[messages.length - 1].message.slice(0, 20)
+            : 'Saluda a tu amigo'}
         </p>
       </div>
     </button>

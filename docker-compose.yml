@@ -4,46 +4,55 @@ services:
     build: ./front
     ports:
       - "3000:3000"
+    environment:
+      - VITE_HOST_BACKEND_PROD=http://localhost:3001
+      - VITE_HOST_MESSAGES_PROD=http://localhost:3002
   back:
     build: ./back
     ports:
       - "3001:3000"
     environment:
-      - DATABASE_URL=mongodb://nexn:password@mongo:27017/nexn?authSource=admin
+      - DATABASE_URL=mongodb://mongo1:27017/nexn?directConnection=true
       - JWT_SECRET_KEY=josepaye123
+      - JWT_TIMEOUT=6h
+      - HOST_FRONTEND=http://localhost:3000
     links:
-      - mongo
-
-  mongo:
-    image: mongo:6
-    container_name: mongo 
-    restart: always
+      - mongo1
+  socket:
+    build: ./socket-messages
     ports:
-      - "27017:27017"
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: nexn
-      MONGO_INITDB_ROOT_PASSWORD: password
-    entrypoint:
-      - bash
-      - -c
-      - |
-          cp /keyfile /mongo_keyfile
-          chmod 400 /mongo_keyfile
-          chown 999:999 /mongo_keyfile
-          exec docker-entrypoint.sh $$@
-    command: "mongod --bind_ip_all --replSet rs0 --keyFile /mongo_keyfile"
-    volumes:
-      - ./keyfile:/keyfile
-
-  mongo-setup:
+      - "3002:3001"
+  mongo1:
     image: mongo:6
-    container_name: mongo_setup
+    hostname: mongo1
+    container_name: mongo1
+    ports:
+      - 27017:27017
+    entrypoint: ["mongod", "--replSet", "myReplicaSet", "--bind_ip", "localhost,mongo1"]
+  mongo2:
+    image: mongo:6
+    hostname: mongo2
+    container_name: mongo2
+    ports:
+      - 27018:27017
+    entrypoint: ["mongod", "--replSet", "myReplicaSet", "--bind_ip", "localhost,mongo2"]
+  mongo3:
+    image: mongo:6
+    hostname: mongo3
+    container_name: mongo3
+    ports:
+      - 27019:27017
+    entrypoint: ["mongod", "--replSet", "myReplicaSet", "--bind_ip", "localhost,mongo3"]
+  mongosetup:
+    image: mongo:6
     depends_on:
-      - mongo
-    restart: on-failure
-    entrypoint: ["/bin/bash", "/setup_mongo.sh"]
+      - mongo1
+      - mongo2
+      - mongo3
     volumes:
-      - ./setup_mongo.sh:/setup_mongo.sh
+      - ./scripts:/scripts
+    restart: "no"
+    entrypoint: [ "bash", "/scripts/mongo_setup.sh"]
 
 
 volumes:

@@ -62,7 +62,9 @@ const Messages = () => {
                               {element.name}
                             </p>
                             <p className="text-xs font-medium text-white/70">
-                              <TimeFormat date={new Date(element.createAt)} />
+                              <TimeFormat
+                                date={new Date(element.createAt || new Date())}
+                              />
                             </p>
                           </div>
                           <div className="bg-white/30 px-4 py-3 rounded-xl max-w-[70%] text-sm">
@@ -76,7 +78,9 @@ const Messages = () => {
                               {element.name}
                             </p>
                             <p className="text-xs font-medium text-white/70">
-                              <TimeFormat date={new Date(element.createAt)} />
+                              <TimeFormat
+                                date={new Date(element.createAt || new Date())}
+                              />
                             </p>
                           </div>
                           <div className="bg-primary px-4 py-2 rounded-xl max-w-[70%] text-sm ">

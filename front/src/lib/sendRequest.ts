@@ -1,4 +1,6 @@
-const HOST_BACKEND = import.meta.env.VITE_HOST_BACKEND
+const HOST_BACKEND = import.meta.env.PROD
+  ? import.meta.env.VITE_HOST_BACKEND_PROD
+  : import.meta.env.VITE_HOST_BACKEND
 
 export const sendRequest = (
   url: string,

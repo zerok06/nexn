@@ -20,7 +20,6 @@ import NoFoundPage from './pages/NoFoundPage'
 import LoaderProfile from './components/profile/LoaderProfile'
 import LoaderProfileUser from './components/profile/LoaderProfileUser'
 import SearchProfile from './pages/Home/SearchProfile'
-import LoaderProfiles from './components/profile/LoaderProfiles'
 import MessagesProvider from './context/MessagesProvider'
 const router = createBrowserRouter([
   {

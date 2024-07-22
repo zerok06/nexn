@@ -2,7 +2,6 @@
   params: { id: string }
 } */
 
-import Button from '@/components/Button'
 import ButtonFollow from '@/components/profile/ButtonFollow'
 import { useAuth } from '@/context/AuthProvider'
 import HomeLayout from '@/layout/HomeLayout'

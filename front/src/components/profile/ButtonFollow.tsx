@@ -16,6 +16,7 @@ const ButtonFollow: React.FC<ButtonFollowProps> = ({ idProfile, isFollow }) => {
         <Button
           onClick={async () => {
             setIsLoading(true)
+            /* @ts-ignore */
             const { success } = await (
               await sendRequest(`/api/follow/${idProfile}`, 'post')
             ).json()
@@ -29,6 +30,7 @@ const ButtonFollow: React.FC<ButtonFollowProps> = ({ idProfile, isFollow }) => {
           className="bg-transparent border-2 border-primary"
           onClick={async () => {
             setIsLoading(true)
+            /* @ts-ignore */
             const { success } = await (
               await sendRequest(`/api/unfollow/${idProfile}`, 'post')
             ).json()

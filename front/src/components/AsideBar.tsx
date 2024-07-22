@@ -1,7 +1,5 @@
-import { Comment01Icon } from './icons/Comment01Icon'
 import { HomeIcon } from './icons/HomeIcon'
 import { Home01Icon } from './icons/Home01Icon'
-import { YoutubeIcon } from './icons/YoutubeIcon'
 import { MessageCircle, Search } from 'lucide-react'
 
 const item = [
