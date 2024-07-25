@@ -1,4 +1,4 @@
-version: '2'
+version: '3'
 services:
   front:
     build: ./front
@@ -16,8 +16,8 @@ services:
       - JWT_SECRET_KEY=josepaye123
       - JWT_TIMEOUT=6h
       - HOST_FRONTEND=http://localhost:3000
-    links:
-      - mongo1
+    networks:
+      - mongors-network
   socket:
     build: ./socket-messages
     ports:
