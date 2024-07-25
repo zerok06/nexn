@@ -16,8 +16,10 @@ services:
       - JWT_SECRET_KEY=josepaye123
       - JWT_TIMEOUT=6h
       - HOST_FRONTEND=http://localhost:3000
-    networks:
-      - mongors-network
+    links:
+      - mongo1
+      - mongo2
+      - mongo3
   socket:
     build: ./socket-messages
     ports:
