@@ -15,6 +15,7 @@ services:
       - mongo3
     restart: always
     entrypoint: [ "/usr/bin/mongod", "--bind_ip_all", "--replSet", "dbrs" ]
+    command: /bin/sh -c "/scripts/rs-init.sh"
   mongo2:
     container_name: mongo2
     image: mongo:4.4
