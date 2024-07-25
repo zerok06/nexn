@@ -1,6 +1,6 @@
 #!/bin/bash
 
-docker-compose up -d
+docker-compose -f replication.yml up
 
 sleep 5
 
