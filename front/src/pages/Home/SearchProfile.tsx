@@ -41,8 +41,8 @@ const SearchProfile = () => {
         </div>
         <div className="pt-10">
           {profiles.length > 0 ? (
-            profiles.map(({ username, nombres, likes, id }) => (
-              <Link to={`/profile/${id}`}>
+            profiles.map(({ username, nombres, likes, _id }) => (
+              <Link to={`/profile/${_id}`}>
                 <div className="flex items-center px-2 py-2 gap-2">
                   <Avatar>
                     <AvatarImage src="https://github.com/shadcns.png" />

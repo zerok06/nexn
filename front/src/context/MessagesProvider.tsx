@@ -20,9 +20,9 @@ export type onlineUser = {
 
 export type Chat = {
   nombre: string
-  id: string
+  _id: string
   sender: {
-    id: string
+    _id: string
     avatar: string
     username: string
     nombres: string
@@ -31,7 +31,7 @@ export type Chat = {
     usuarioId: string
   }
   receptor: {
-    id: string
+    _id: string
     avatar: string
     username: string
     nombres: string
@@ -85,7 +85,7 @@ const MessagesProvider: React.FC<MessagesProviderProps> = ({ children }) => {
     ).json()
     if (success) {
       console.log(all)
-      console.log(user.id)
+      console.log(user._id)
       setChats(all)
     }
   }
@@ -97,7 +97,7 @@ const MessagesProvider: React.FC<MessagesProviderProps> = ({ children }) => {
     })
     socket?.emit('sendMessage', {
       idChat: selectChat,
-      senderId: user.id,
+      senderId: user._id,
       receptorId: receptorId,
       message,
       name: user.nombres,
@@ -115,14 +115,14 @@ const MessagesProvider: React.FC<MessagesProviderProps> = ({ children }) => {
 
     setChats(state =>
       state.map(item => {
-        if (item.id == selectChat) {
+        if (item._id == selectChat) {
           return {
             ...item,
             messages: [
               ...item.messages,
               {
                 idChat: selectChat,
-                senderId: user.id,
+                senderId: user._id,
                 receptorId: receptorId,
                 message,
                 name: user.nombres,
@@ -152,7 +152,8 @@ const MessagesProvider: React.FC<MessagesProviderProps> = ({ children }) => {
 
   useEffect(() => {
     if (socket === null) return
-    socket?.emit('joinUser', { id: user.id })
+    socket?.emit('joinUser', { id: user._id })
+    console.log(user._id)
   }, [socket, user])
 
   useEffect(() => {
@@ -174,7 +175,7 @@ const MessagesProvider: React.FC<MessagesProviderProps> = ({ children }) => {
 
       setChats(state =>
         state.map(item => {
-          if (item.id == message.idChat) {
+          if (item._id == message.idChat) {
             return { ...item, messages: [...item.messages, message] }
           }
           return item

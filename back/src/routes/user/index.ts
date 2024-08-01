@@ -1,6 +1,7 @@
 import { PrismaClient } from '@prisma/client'
 import e, { Request, Response } from 'express'
 import { decoreToken } from '../../lib/jwt'
+import { Follow, Profile } from '../../lib/database'
 
 const app = e()
 const prisma = new PrismaClient()
@@ -12,21 +13,20 @@ const findOneUser = async (req: Request, res: Response) => {
 
     /* @ts-ignore */
     const { idProfile: idUser } = decoreToken(token)
-    const profile = await prisma.profile.findFirst({
-      where: {
-        id,
-      },
-    })
+    const profile = await Profile.findById(id).exec()
 
-    const existFollow = !!(await prisma.follow.findFirst({
-      where: {
-        followerId: idUser,
-        followingId: id,
-      },
-    }))
+    if (!profile) {
+      return res.json({ success: false, message: 'Profile not found' })
+    }
 
-    res.json({ success: true, profile: { ...profile, existFollow } })
+    const existFollow = !!(await Follow.findOne({
+      follower: idUser,
+      following: id,
+    }).exec())
+
+    res.json({ success: true, profile: { ...profile.toObject(), existFollow } })
   } catch (error) {
+    console.error('Error en findOneUser:', error)
     res.json({ success: false })
   }
 }
@@ -35,41 +35,20 @@ const searchProfiles = async (req: Request, res: Response) => {
   try {
     const text = req.params.text
     const token = req.cookies['auth-nexn']
-
     /* @ts-ignore */
     const { idProfile: idUser } = decoreToken(token)
-    const find = await prisma.profile.findMany({
-      where: {
-        OR: [
-          {
-            username: {
-              contains: text,
-            },
-          },
-          {
-            usuario: {
-              nombres: {
-                contains: text,
-              },
-            },
-          },
-          {
-            usuario: {
-              apellidos: {
-                contains: text,
-              },
-            },
-          },
-        ],
-        AND: {
-          id: {
-            not: idUser,
-          },
-        },
-      },
-    })
-    res.json({ success: true, profiles: find })
+    const profiles = await Profile.find({
+      $or: [
+        { username: { $regex: text, $options: 'i' } },
+        { 'usuario.nombres': { $regex: text, $options: 'i' } },
+        { 'usuario.apellidos': { $regex: text, $options: 'i' } },
+      ],
+      _id: { $ne: idUser },
+    }).exec()
+
+    res.json({ success: true, profiles })
   } catch (error) {
+    console.error('Error en searchProfiles:', error)
     res.json({ success: false, error })
   }
 }
@@ -81,13 +60,10 @@ const findUser = async (req: Request, res: Response) => {
     /* @ts-ignore */
     const { id } = decoreToken(token)
 
-    const profile = await prisma.profile.findFirst({
-      where: {
-        id,
-      },
-    })
+    const profile = await Profile.findById(id).exec()
     res.json({ success: true, profile })
   } catch (error) {
+    console.error('Error en findUser:', error)
     res.json({ success: false, error })
   }
 }

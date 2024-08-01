@@ -1,0 +1,34 @@
+version: '2'
+
+services:
+  mongo:
+    image: candis/mongo-replica-set
+    ports:
+      - '27017:27017'
+      - '27018:27018'
+      - '27019:27019'
+    deploy:
+      mode: replicated
+      replicas: 1
+  front:
+    build: ./front
+    ports:
+      - '3000:3000'
+    environment:
+      - VITE_HOST_BACKEND_PROD=http://localhost:3001
+      - VITE_HOST_MESSAGES_PROD=http://localhost:3002
+  back:
+    build: ./back
+    ports:
+      - '3001:3001'
+    environment:
+      - DATABASE_URL=mongodb://mongo:27017,mongo:27018,mongo:27019/?replicaSet=rs0&readPreference=primary&ssl=false
+      - JWT_SECRET_KEY=josepaye123
+      - JWT_TIMEOUT=6h
+      - HOST_FRONTEND=http://localhost:3000
+    links:
+      - mongo
+  socket:
+    build: ./socket-messages
+    ports:
+      - '3002:3002'

@@ -34,7 +34,7 @@ const SignInForm = () => {
     if (res.success) {
       setToken({
         apellidos: res.user.apellidos,
-        id: res.user.id,
+        _id: res.user._id,
         nombres: res.user.nombres,
         username: res.user.credenciales.username,
       })

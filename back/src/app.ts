@@ -7,13 +7,16 @@ import chat from './routes/chat'
 import morgan from 'morgan'
 import cors from 'cors'
 import cookieParser from 'cookie-parser'
+import { connectDB } from './lib/ConnectionDB'
 
 const app = express()
 
-const PORT = process.env.PORT || 3000
+const PORT = process.env.PORT || 3001
 // Variables de entorno
 app.set('port', PORT)
 
+// BAse de datos
+connectDB()
 // Configuración de express
 app.use(express.urlencoded({ extended: false }))
 app.use(express.json())

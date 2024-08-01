@@ -5,16 +5,16 @@ import TimeFormat from '../TimeFormat'
 
 interface ChatButton {
   chat: Chat
-  handle: (id: string) => void
+  handle: (_id: string) => void
 }
 
 const ChatButton: React.FC<ChatButton> = ({
-  chat: { nombre, messages, id },
+  chat: { nombre, messages, _id },
   handle,
 }) => {
   return (
     <button
-      onClick={() => handle(id)}
+      onClick={() => handle(_id)}
       className="w-full flex gap-3 items-center py-3 transition-colors duration-300 hover:bg-white/5 px-3 rounded-md outline-none"
     >
       <Avatar>
