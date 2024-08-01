@@ -8,8 +8,6 @@ WORKDIR /home/app
 
 RUN npm i 
 
-RUN npx prisma db push
-
 RUN npm run build
 
 EXPOSE 3000

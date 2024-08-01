@@ -1,9 +1,10 @@
+// @ts-nocheck
 import { PrismaClient } from '@prisma/client'
 import e from 'express'
 import { decoreToken } from '../../lib/jwt'
+import { Chat, Message, Profile } from '../../lib/database'
 
 const app = e()
-const prisma = new PrismaClient()
 
 /**
  *  Enviar todos los chats
@@ -12,90 +13,82 @@ const prisma = new PrismaClient()
  *
  */
 
+// Obtener todos los chats
 app.get('/chats', async (req, res) => {
   try {
     const token = req.cookies['auth-nexn']
     /* @ts-ignore */
     const { id, idProfile } = decoreToken(token)
-    console.log(id)
 
-    const chats = await prisma.chat.findMany({
-      where: {
-        OR: [
-          {
-            profileReceptorId: idProfile,
-          },
-          {
-            profileSenderId: idProfile,
-          },
-        ],
-      },
-      include: {
-        Message: true,
-        receptor: true,
-        sender: true,
-      },
+    const chats = await Chat.find({
+      $or: [{ sender: idProfile }, { receptor: idProfile }],
     })
+      .populate('sender', 'nombres')
+      .populate('receptor', 'nombres')
+      .populate('Message')
+      .exec()
+    console.log(chats)
+    console.log(await Message.find())
 
-    const tmp = chats.map(item => {
-      const itemTmp = {
-        id: item.id,
+    /* @ts-ignore */
+    const result = chats.map(chat => {
+      return {
+        id: chat._id,
         nombre:
-          item.sender.id == idProfile
-            ? item.receptor.nombres
-            : item.sender.nombres,
-        sender: item.sender,
-        receptor: item.receptor,
-        messages: item.Message.map(element => {
-          const isSend = element.profileId == idProfile
+          chat.sender._id.toString() === idProfile
+            ? chat.receptor.nombres
+            : chat.sender.nombres,
+        sender: chat.sender,
+        receptor: chat.receptor,
+        /* @ts-ignore */
+        messages: chat.Message.map(message => {
+          const isSend = message.profile.toString() === idProfile
           return {
-            message: element.message,
+            message: message.message,
             role: isSend ? 'SEND' : 'RECEPTOR',
-            name: element.nombre,
-            createAt: element.createAt,
+            name: message.nombre,
+            createAt: message.createAt,
             idProfile: idProfile,
-            idMessage: element.profileId,
+            idMessage: message.profile.toString(),
           }
         }),
       }
-      return itemTmp
     })
 
-    res.json({ success: true, chats: tmp })
+    res.json({ success: true, chats: result })
   } catch (error) {
-    res.json({ success: false, error })
+    console.error('Error en /chats:', error)
+    /* @ts-ignore */
+    res.json({ success: false, error: error.message })
   }
 })
 
-/* Enviar mensaje */
-/**
- * @params id = id del chat
- */
+// Enviar mensaje
 app.post('/message/:id', async (req, res) => {
   try {
     const token = req.cookies['auth-nexn']
     const chatId = req.params.id
-    const body = req.body
+    const { message } = req.body
+    console.log(message)
+
     /* @ts-ignore */
     const { idProfile } = decoreToken(token)
 
-    const profile = await prisma.profile.findUnique({
-      where: {
-        id: idProfile,
-      },
-    })
+    const profile = await Profile.findById(idProfile).exec()
 
-    await prisma.message.create({
-      data: {
-        chatId,
-        profileId: idProfile,
-        nombre: profile?.nombres!,
-        message: body.message,
-      },
-    })
+    await new Message({
+      chat: chatId,
+      profile: idProfile,
+      nombre: profile?.nombres || '',
+      message,
+    }).save()
+    console.log(await Message.find())
+
     res.json({ success: true })
   } catch (error) {
-    res.json({ success: false, error })
+    console.error('Error en /message:', error)
+    /* @ts-ignore */
+    res.json({ success: false, error: error.message })
   }
 })
 

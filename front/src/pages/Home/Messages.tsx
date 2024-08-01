@@ -27,12 +27,15 @@ const Messages = () => {
           <Separator className="my-2 bg-white/10" />
 
           {chats.map(e => (
-            <ChatButton key={e.id} {...{ chat: e, handle: handleSelectChat }} />
+            <ChatButton
+              key={e._id}
+              {...{ chat: e, handle: handleSelectChat }}
+            />
           ))}
         </div>
 
         <div className="flex-1 border-t-2 border-b-2 border-r-2 border-black relative flex flex-col z-0">
-          {chats.find(item => item.id === selectChat) && (
+          {chats.find(item => item._id === selectChat) && (
             <>
               <div className="h-20 bg-black flex px-4 items-center gap-4">
                 <Avatar>
@@ -41,19 +44,19 @@ const Messages = () => {
                 </Avatar>
                 <div className="flex-1 flex flex-col gap-1">
                   <h4 className="text-base font-medium leading-none">
-                    {chats.find(item => item.id === selectChat)?.nombre}
+                    {chats.find(item => item._id === selectChat)?.nombre}
                   </h4>
                   {onlineUsers.some(
                     item =>
                       item.userId ===
-                      chats.find(item => item.id === selectChat)?.id
+                      chats.find(item => item._id === selectChat)?._id
                   ) && <p className="text-white/70 text-xs">En linea</p>}
                 </div>
               </div>
               <div className="flex-1 bg-transparent pt-4 px-4  pb-12 overflow-y-scroll max-h-[calc(100svh-80px-80px)]">
                 <div className=" flex flex-col gap-8 py-12">
                   {chats
-                    .find(item => item.id === selectChat)
+                    .find(item => item._id === selectChat)
                     ?.messages.map(element =>
                       element.role != 'SEND' ? (
                         <div className=" flex flex-col items-start">
@@ -110,7 +113,7 @@ const Messages = () => {
                       adipisci reprehenderit quia hic laudantium maiores aperiam
                       qui incidunt iste, esse tempora deserunt blanditiis
                       aliquam. Nesciunt quo aut itaque? Quod magnam blanditiis
-                      omnis, id provident vitae debitis?
+                      omnis, _id provident vitae debitis?
                     </div>
                   </div> */}
                 </div>
@@ -118,10 +121,11 @@ const Messages = () => {
               <div className="bg-transparent  absolute bottom-8 left-0 z-10 w-full px-4">
                 <FormSendMessage
                   idReceptor={
-                    chats.find(item => item.id === selectChat)?.receptor.id ==
-                    user.id
-                      ? chats.find(item => item.id === selectChat)?.sender.id!
-                      : chats.find(item => item.id === selectChat)?.receptor.id!
+                    chats.find(item => item._id === selectChat)?.receptor._id ==
+                    user._id
+                      ? chats.find(item => item._id === selectChat)?.sender._id!
+                      : chats.find(item => item._id === selectChat)?.receptor
+                          ._id!
                   }
                 />
               </div>

@@ -1,119 +1,88 @@
 import { PrismaClient } from '@prisma/client'
 import e from 'express'
 import { decoreToken } from '../../lib/jwt'
+import { Chat, Follow } from '../../lib/database'
 
 const app = e()
 const prisma = new PrismaClient()
 
-/* Follow */
-/**
- *
- * @params id = id del perfil a seguir
- */
 app.post('/follow/:id', async (req, res) => {
   try {
     const token = req.cookies['auth-nexn']
-
     /* @ts-ignore */
     const { idProfile: follower } = decoreToken(token)
-
     const following = req.params.id
 
-    await prisma.follow.create({
-      data: {
-        followerId: follower,
-        followingId: following,
-      },
+    // Crear nuevo registro de seguimiento
+    await Follow.create({
+      follower: follower,
+      following: following,
     })
 
-    await prisma.chat.create({
-      data: {
-        profileSenderId: follower,
-        profileReceptorId: following,
-      },
+    // Crear nuevo chat entre el seguidor y el seguido
+    await Chat.create({
+      sender: follower,
+      receptor: following,
     })
 
     res.json({ success: true })
   } catch (error) {
+    console.error('Error en /follow:', error)
     res.json({ success: false, error })
   }
 })
 
-/* UnFollow */
-
-/**
- * @params id = id del perfil a dejar de seguir
- */
-
+// Unfollow
 app.post('/unfollow/:id', async (req, res) => {
   try {
     const token = req.cookies['auth-nexn']
     /* @ts-ignore */
     const { idProfile: follower } = decoreToken(token)
     const following = req.params.id
-    const followData = await prisma.follow.findFirst({
-      where: {
-        OR: [
-          {
-            AND: [
-              {
-                followerId: follower,
-              },
-              {
-                followingId: following,
-              },
-            ],
-          },
-          {
-            AND: [
-              {
-                followerId: following,
-              },
-              {
-                followingId: follower,
-              },
-            ],
-          },
-        ],
-      },
-    })
+
+    // Buscar el seguimiento existente
+    const followData = await Follow.findOne({
+      $or: [
+        { follower: follower, following: following },
+        { follower: following, following: follower },
+      ],
+    }).exec()
+
     if (!followData) {
-      new Error('No existe follow')
+      throw new Error('No existe follow')
     }
-    await prisma.follow.delete({
-      where: {
-        id: followData?.id,
-      },
-    })
-    const chat = await prisma.chat.findFirst({
-      where: {
-        profileSenderId: follower,
-        profileReceptorId: following,
-      },
-    })
-    console.log(3)
-    await prisma.chat.delete({
-      where: {
-        id: chat?.id,
-      },
-    })
+
+    // Eliminar el registro de seguimiento
+    await Follow.deleteOne({ _id: followData._id }).exec()
+
+    // Buscar y eliminar el chat asociado
+    const chat = await Chat.findOne({
+      sender: follower,
+      receptor: following,
+    }).exec()
+
+    if (chat) {
+      await Chat.deleteOne({ _id: chat._id }).exec()
+    }
+
     res.json({ success: true })
   } catch (error) {
+    console.error('Error en /unfollow:', error)
     res.json({ success: false, error })
   }
 })
 
+// Count Followers
 app.post('/followers/:id', async (req, res) => {
   try {
     const id = req.params.id
 
-    const count = await prisma.follow.count({
-      where: {
-        followingId: id,
-      },
-    })
+    // Contar el número de seguidores
+    const count = await Follow.countDocuments({ following: id }).exec()
+
     res.json({ success: true, count })
   } catch (error) {
+    console.error('Error en /followers:', error)
     res.json({ success: false })
   }
 })

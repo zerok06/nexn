@@ -16,6 +16,8 @@ let users: Array<UserProps> = []
 io.on('connection', socket => {
   socket.on('joinUser', req => {
     if (!req.id) {
+      console.log(req)
+
       return
     }
     !users.some(item => item.userId === req.id) &&
@@ -53,4 +55,4 @@ io.on('connection', socket => {
   })
 })
 
-io.listen(3001)
+io.listen(3002)

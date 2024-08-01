@@ -3,6 +3,7 @@ import express from 'express'
 import type { Request, Response } from 'express'
 import { comparePassword } from '../lib/hash'
 import { decoreToken, encodeToken } from '../lib/jwt'
+import { Creadenciales, Profile, Usuario } from '../lib/database'
 
 const app = express()
 
@@ -12,85 +13,88 @@ interface SignInProps {
 }
 const prisma = new PrismaClient()
 
-const signIn = async (req: Request, res: Response) => {
+// Sign In
+app.post('/signin', async (req, res) => {
   try {
-    const { password, username }: SignInProps = req.body
-    const existUser = await prisma.usuario.findFirst({
-      where: {
-        credenciales: {
-          username,
-        },
-      },
-      include: {
-        credenciales: true,
-      },
-    })
-    if (!existUser) {
-      new Error('Usuario no registrado')
+    const { password, username } = req.body
+
+    // Buscar credenciales por nombre de usuario
+    const creadenciales = await Creadenciales.findOne({ username }).exec()
+
+    if (!creadenciales) {
+      throw new Error('Usuario no registrado')
     }
 
-    if (!comparePassword(password, existUser?.credenciales.password!)) {
-      new Error('Credenciales incorrectas')
+    // Buscar usuario asociado con las credenciales
+    const usuario = await Usuario.findOne({ credenciales: creadenciales._id })
+      .populate('credenciales')
+      .exec()
+
+    if (!usuario) {
+      throw new Error('Usuario no registrado')
     }
 
-    const profile = await prisma.profile.findFirst({
-      where: {
-        usuario: {
-          id: existUser?.id,
-        },
-      },
-    })
+    // Comparar contraseñas
+    if (!comparePassword(password, creadenciales.password)) {
+      throw new Error('Credenciales incorrectas')
+    }
 
+    // Buscar perfil asociado con el usuario
+    const profile = await Profile.findOne({ usuario: usuario._id }).exec()
+
+    // Generar token
     const token = encodeToken({
-      id: existUser?.id,
-      role: existUser?.role,
-      idProfile: profile?.id,
+      id: usuario._id,
+      role: usuario.role,
+      idProfile: profile ? profile._id : null,
     })
+
     res
       .cookie('auth-nexn', token, {
-        httpOnly: false,
-        secure: true,
-        maxAge: 900000,
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        maxAge: 900000, // 15 minutos
         path: '/',
-        partitioned: true,
       })
       .json({
         success: true,
         token,
-        user: existUser,
+        user: usuario,
       })
   } catch (error) {
-    res.json({ success: false, error })
+    console.error('Error en /signin:', error)
+    /* @ts-ignore */
+    res.json({ success: false, error: error.message })
   }
-}
+})
 
-const verifyAuth = async (req: Request, res: Response) => {
+// Verify Auth
+app.post('/verify', async (req, res) => {
   try {
     const token = req.cookies['auth-nexn']
 
-    const payload = decoreToken(token)
-    const user = await prisma.profile.findFirst({
-      where: {
-        usuario: {
-          /* @ts-ignore */
-          id: payload.id,
-        },
-      },
-      include: {
-        usuario: {
-          include: {
-            credenciales: true,
-          },
-        },
-      },
-    })
-    res.json({ success: true, user })
-  } catch (error) {
-    res.json({ success: false, error })
-  }
-}
+    if (!token) {
+      throw new Error('Token no proporcionado')
+    }
 
-app.post('/signin', signIn)
-app.post('/verify', verifyAuth)
+    const payload = decoreToken(token)
+
+    // Buscar perfil del usuario
+    /* @ts-ignore */
+    const profile = await Profile.findOne({ usuario: payload.id })
+      .populate('usuario')
+      .exec()
+
+    if (!profile) {
+      throw new Error('Usuario no encontrado')
+    }
+
+    res.json({ success: true, user: profile })
+  } catch (error) {
+    console.error('Error en /verify:', error)
+    /* @ts-ignore */
+    res.json({ success: false, error: error.message })
+  }
+})
 
 export default app

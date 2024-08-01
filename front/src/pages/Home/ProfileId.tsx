@@ -36,7 +36,7 @@ const Profile = () => {
               <div>
                 <ButtonFollow
                   /* @ts-ignore */
-                  idProfile={data?.profile?.id}
+                  idProfile={data?.profile?._id}
                   /* @ts-ignore */
                   isFollow={data?.profile?.existFollow}
                 />

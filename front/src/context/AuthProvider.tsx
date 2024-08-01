@@ -9,7 +9,7 @@ const AuthContext = createContext({
     nombres: '',
     apellidos: '',
     username: '',
-    id: '',
+    _id: '',
   },
 })
 
@@ -21,7 +21,7 @@ interface UserProps {
   nombres: string
   apellidos: string
   username: string
-  id: string
+  _id: string
 }
 
 const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
@@ -30,7 +30,7 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     nombres: '',
     apellidos: '',
     username: '',
-    id: '',
+    _id: '',
   })
 
   const setToken = (user: UserProps) => {
@@ -44,7 +44,7 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     if (res.success) {
       setUser({
         apellidos: res.user.usuario.apellidos,
-        id: res.user.id,
+        _id: res.user._id,
         nombres: res.user.nombres,
         username: res.user.username,
       })
